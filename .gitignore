@@ -1,0 +1,4 @@
+test/unit/credentials.yml
+Gemfile.lock
+*.gem
+.ruby-*
