@@ -7,7 +7,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["robert.borkowski@forward3d.com"]
   gem.description   = %q{Bing Ads Reports}
   gem.summary       = %q{Allows easily pull reports from Bing Ads}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/forward3d/bing-ads-reporting"
 
   gem.files         = [ 'lib/bing-ads-reporting.rb',
                         'lib/bing-ads-reporting/service.rb',
