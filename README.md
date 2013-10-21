@@ -12,6 +12,7 @@ Initialise service
 
 Create report and get it's ID
 
+    period = Datebox::Period.new('2013-07-01', '2013-07-03')
     id = service.generate_report({report_type: 'KeywordPerformance',
                                   report_format: 'Tsv',
                                   aggregation: 'Daily',
