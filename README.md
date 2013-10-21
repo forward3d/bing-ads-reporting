@@ -16,7 +16,6 @@ Create report and get it's ID
                                   report_format: 'Tsv',
                                   aggregation: 'Daily',
                                   aggregation_period: 'ReportAggregation::Daily',
-                                  include_headers: 'false',
                                   columns: %w[AccountId AccountName CampaignId CampaignName AdGroupId AdGroupName KeywordId Keyword DestinationUrl MatchType AverageCpc CurrentMaxCpc AdDistribution CurrencyCode Impressions Clicks Ctr CostPerConversion Spend AveragePosition TimePeriod CampaignStatus AdGroupStatus DeviceType]},
                                  {period: period})
 
