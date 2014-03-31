@@ -1,4 +1,5 @@
 require_relative "../test_helper"
+require 'curb'
 require 'datebox'
 
 class TestReport < Test::Unit::TestCase
@@ -30,7 +31,7 @@ class TestReport < Test::Unit::TestCase
   end
   
   def test_gets_report
-    puts @service.report_body("714786757")
+    puts @service.report_body("1109508920")
   end
   
 end
