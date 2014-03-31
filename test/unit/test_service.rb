@@ -19,15 +19,16 @@ class TestReport < Test::Unit::TestCase
                                     include_headers: 'false',
                                     columns: %w[AccountId AccountName CampaignId CampaignName AdGroupId AdGroupName KeywordId Keyword DestinationUrl MatchType AverageCpc CurrentMaxCpc AdDistribution CurrencyCode Impressions Clicks Ctr CostPerConversion Spend AveragePosition TimePeriod CampaignStatus AdGroupStatus DeviceType]},
                                    {period: period})
+    puts "--- USE THE FOLLOWING ID IN TEST BELOW! ----"
     p id
   end
 
   def test_gets_report_state
-    puts @service.report_ready?("714786757")
+    puts @service.report_ready?("1109508920")
   end
 
   def test_gets_report_url
-    puts @service.report_url("714786757")
+    puts @service.report_url("1109508920")
   end
   
   def test_gets_report
