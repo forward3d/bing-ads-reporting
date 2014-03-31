@@ -89,7 +89,7 @@ module BingAdsReporting
       end
 
       def client
-        Savon.client({wsdl: "https://adcenterapi.microsoft.com/Api/Advertiser/v8/Reporting/ReportingService.svc?wsdl",
+        Savon.client({wsdl: "https://api.bingads.microsoft.com/Api/Advertiser/Reporting/V9/ReportingService.svc?wsdl",
                       log_level: :info,
                       namespaces: {"xmlns:arr" => 'http://schemas.microsoft.com/2003/10/Serialization/Arrays'},
                       soap_header: {ns('ApplicationToken') => @settings[:applicationToken],
