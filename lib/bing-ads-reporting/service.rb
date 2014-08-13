@@ -49,7 +49,9 @@ module BingAdsReporting
     end
   
     def report_ready?(id)
-      status = poll_report(id).body[:poll_generate_report_response][:report_request_status][:status] rescue nil
+      polled = poll_report(id)
+      status = polled.body[:poll_generate_report_response][:report_request_status][:status] rescue nil
+      raise "Report status: Error for ID: #{id}. TrackingId: #{polled.header[:tracking_id]}" if status == "Error"
       status == "Success"
     end
     
@@ -99,7 +101,7 @@ module BingAdsReporting
                                     ns('UserName') => @settings[:username],
                                     ns('Password') => @settings[:password] }
                       })
-                      # .merge({pretty_print_xml: true, log_level: :debug}) # for more logging
+                      # .merge({pretty_print_xml: true, log_level: :debug})) # for more logging
       end
 
       def ns(str)
