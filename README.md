@@ -8,7 +8,7 @@
 
 Initialise service
 
-    service = BingAdsReporting::Service.new({developerToken: '', applicationToken: '', password: '', username: '', :accountId: '', customerId: ''})
+    service = BingAdsReporting::Service.new({developerToken: '', applicationToken: '', authenticationToken: '', :accountId: '', customerId: ''})
 
 Create report and get it's ID
 
