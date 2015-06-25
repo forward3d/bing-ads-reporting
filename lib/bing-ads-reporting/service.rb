@@ -1,4 +1,6 @@
 module BingAdsReporting
+  class AuthenticationTokenExpired < Exception; end
+  
   class Service
 
     def initialize(settings)
@@ -10,40 +12,47 @@ module BingAdsReporting
       period = options[:period]
       report_type = options[:report_type]
     
-      response = client.call(:submit_generate_report, message: {
-        ns('ReportRequest') => {
-          ns("Format") => options[:format],
-          ns("Language") => "English",
-          ns("ReportName") => options[:report_name],
-          ns("ReturnOnlyCompleteData") => false,
-          ns("Aggregation") => options[:aggregation],
-          ns("Columns") => {
-            ns("#{report_type}ReportColumn") => options[:columns]
-          },
-          ns("Scope") => {
-            ns("AccountIds") => {
-              'arr:long' => @settings[:accountId]
-            }
-          },
-          ns("Time") => {
-            # apparently order is important, and end date has to be before start date, wtf
-            ns("CustomDateRangeEnd") => {
-              ns("Day") => period.to.day,
-              ns("Month") => period.to.month,
-              ns("Year") => period.to.year
+      begin
+        response = client.call(:submit_generate_report, message: {
+          ns('ReportRequest') => {
+            ns("Format") => options[:format],
+            ns("Language") => "English",
+            ns("ReportName") => options[:report_name],
+            ns("ReturnOnlyCompleteData") => false,
+            ns("Aggregation") => options[:aggregation],
+            ns("Columns") => {
+              ns("#{report_type}ReportColumn") => options[:columns]
             },
-            ns("CustomDateRangeStart") => {
-              ns("Day") => period.from.day,
-              ns("Month") => period.from.month,
-              ns("Year") => period.from.year
+            ns("Scope") => {
+              ns("AccountIds") => {
+                'arr:long' => @settings[:accountId]
+              }
+            },
+            ns("Time") => {
+              # apparently order is important, and end date has to be before start date, wtf
+              ns("CustomDateRangeEnd") => {
+                ns("Day") => period.to.day,
+                ns("Month") => period.to.month,
+                ns("Year") => period.to.year
+              },
+              ns("CustomDateRangeStart") => {
+                ns("Day") => period.from.day,
+                ns("Month") => period.from.month,
+                ns("Year") => period.from.year
+              }
+              # ns("PredefinedTime") => options[:time]
             }
-            # ns("PredefinedTime") => options[:time]
+          },
+          :attributes! => {ns("ReportRequest") => {"xmlns:i" => "http://www.w3.org/2001/XMLSchema-instance",
+                                                   "i:type" => ns("#{report_type}ReportRequest")}
           }
-        },
-        :attributes! => {ns("ReportRequest") => {"xmlns:i" => "http://www.w3.org/2001/XMLSchema-instance",
-                                                 "i:type" => ns("#{report_type}ReportRequest")}
-        }
-      })
+        })
+      rescue Savon::SOAPFault => e
+        err = e.to_hash[:fault][:detail][:ad_api_fault_detail][:errors][:ad_api_error][:error_code] rescue nil
+        msg = e.to_hash[:fault][:detail][:ad_api_fault_detail][:errors][:ad_api_error][:message] rescue ''
+        raise AuthenticationTokenExpired.new(msg) if err == 'AuthenticationTokenExpired'
+        raise e
+      end
       
       response.body[:submit_generate_report_response][:report_request_id]
     end
