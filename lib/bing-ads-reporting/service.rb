@@ -98,8 +98,9 @@ module BingAdsReporting
                                     ns('CustomerAccountId') => @settings[:accountId],
                                     ns('CustomerId') => @settings[:customerId],
                                     ns('DeveloperToken') => @settings[:developerToken],
-                                    ns('UserName') => @settings[:username],
-                                    ns('Password') => @settings[:password] }
+                                    # ns('UserName') => @settings[:username],
+                                    # ns('Password') => @settings[:password] }
+                                    ns('AuthenticationToken') => @settings[:authenticationToken] }
                       })
                       # .merge({pretty_print_xml: true, log_level: :debug})) # for more logging
       end

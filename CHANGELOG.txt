@@ -1,3 +1,6 @@
+* 1.0.0
+  This version users OAuth tokens that are provided instead of username/password combination
+
 * 0.1.0
 
   This version talks to Bing Ads API Version 9 (dropped support for Version 8)

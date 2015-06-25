@@ -7,7 +7,7 @@ class TestReport < Test::Unit::TestCase
   def setup
     yml = YAML.load_file(File.join(File.dirname(File.expand_path(__FILE__)), "credentials.yml")) # create this if you want to test!
     @service = BingAdsReporting::Service.new(yml)
-    @id_to_check = "1109867403" # set for tests to pass
+    @id_to_check = "3266163982" # set for tests to pass
   end
     
   def test_scheduling_report
