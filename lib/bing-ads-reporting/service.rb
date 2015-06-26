@@ -100,16 +100,24 @@ module BingAdsReporting
       end
 
       def client
+        if @settings[:username] && @settings[:password]
+          header = {ns('ApplicationToken') => @settings[:applicationToken],
+                                              ns('CustomerAccountId') => @settings[:accountId],
+                                              ns('CustomerId') => @settings[:customerId],
+                                              ns('DeveloperToken') => @settings[:developerToken],
+                                              ns('UserName') => @settings[:username],
+                                              ns('Password') => @settings[:password] }
+        else
+          header = {ns('ApplicationToken') => @settings[:applicationToken],
+                                              ns('CustomerAccountId') => @settings[:accountId],
+                                              ns('CustomerId') => @settings[:customerId],
+                                              ns('DeveloperToken') => @settings[:developerToken],
+                                              ns('AuthenticationToken') => @settings[:authenticationToken] }
+        end
         Savon.client({wsdl: "https://api.bingads.microsoft.com/Api/Advertiser/Reporting/V9/ReportingService.svc?wsdl",
                       log_level: :info,
                       namespaces: {"xmlns:arr" => 'http://schemas.microsoft.com/2003/10/Serialization/Arrays'},
-                      soap_header: {ns('ApplicationToken') => @settings[:applicationToken],
-                                    ns('CustomerAccountId') => @settings[:accountId],
-                                    ns('CustomerId') => @settings[:customerId],
-                                    ns('DeveloperToken') => @settings[:developerToken],
-                                    # ns('UserName') => @settings[:username],
-                                    # ns('Password') => @settings[:password] }
-                                    ns('AuthenticationToken') => @settings[:authenticationToken] }
+                      soap_header: header
                       })
                       # .merge({pretty_print_xml: true, log_level: :debug})) # for more logging
       end
