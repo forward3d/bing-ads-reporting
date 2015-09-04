@@ -3,8 +3,9 @@ module BingAdsReporting
   
   class Service
 
-    def initialize(settings)
+    def initialize(settings, logger = nil)
       @settings = settings
+      @logger = logger || Logger.new($stdout)
     end
   
     def generate_report(report_settings, report_params)
@@ -50,7 +51,12 @@ module BingAdsReporting
       rescue Savon::SOAPFault => e
         err = e.to_hash[:fault][:detail][:ad_api_fault_detail][:errors][:ad_api_error][:error_code] rescue nil
         msg = e.to_hash[:fault][:detail][:ad_api_fault_detail][:errors][:ad_api_error][:message] rescue ''
-        raise AuthenticationTokenExpired.new(msg) if err == 'AuthenticationTokenExpired'
+        if err == 'AuthenticationTokenExpired'
+          @logger.error err
+          raise AuthenticationTokenExpired.new(msg)
+        end
+        @logger.error e.message
+        @logger.error msg
         raise e
       end
       
@@ -90,7 +96,7 @@ module BingAdsReporting
       end
 
       def download(url)
-        puts %Q{Downloading Bing report from: #{url}}
+        @logger.debug "Downloading Bing report from: #{url}"
         curl = Curl::Easy.new(url) do |c|
           c.use_ssl = 3
           c.ssl_version = 3

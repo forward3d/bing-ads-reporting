@@ -1,3 +1,6 @@
+* 1.1.0
+  It is possible to pass in logger into the gem for extra logging
+
 * 1.0.0
   This version users OAuth tokens that are provided instead of username/password combination
 
