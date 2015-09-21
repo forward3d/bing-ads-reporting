@@ -1,0 +1,24 @@
+2003 - AccountNotAuthorized
+
+<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\">
+  <s:Body>
+    <s:Fault>
+      <faultcode>s:Server</faultcode>
+      <faultstring xml:lang=\"en-US\">Invalid client data. Check the SOAP fault details for more information</faultstring>
+      <detail>
+        <ApiFaultDetail xmlns=\"https://bingads.microsoft.com/Reporting/v9\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\">
+          <TrackingId xmlns=\"https://adapi.microsoft.com\">........-....-....-....-............</TrackingId>
+          <BatchErrors/>
+          <OperationErrors>
+            <OperationError>
+              <Code>2003</Code>
+              <Details/>
+              <ErrorCode>AccountNotAuthorized</ErrorCode>
+              <Message>The specified report request contains at least one account which you have insufficient privileges to access. Please submit a report request for accounts that you are authorized to access.</Message>
+            </OperationError>
+          </OperationErrors>
+        </ApiFaultDetail>
+      </detail>
+    </s:Fault>
+  </s:Body>
+</s:Envelope>

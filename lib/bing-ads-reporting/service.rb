@@ -48,9 +48,15 @@ module BingAdsReporting
                                                    "i:type" => ns("#{report_type}ReportRequest")}
           }
         })
+        
       rescue Savon::SOAPFault => e
+        msg = 'unexpected error'
         err = e.to_hash[:fault][:detail][:ad_api_fault_detail][:errors][:ad_api_error][:error_code] rescue nil
-        msg = e.to_hash[:fault][:detail][:ad_api_fault_detail][:errors][:ad_api_error][:message] rescue ''
+        msg = e.to_hash[:fault][:detail][:ad_api_fault_detail][:errors][:ad_api_error][:message] if err
+        if err.nil?
+          err = e.to_hash[:fault][:detail][:api_fault_detail][:operation_errors][:operation_error][:error_code] rescue nil
+          msg = e.to_hash[:fault][:detail][:api_fault_detail][:operation_errors][:operation_error][:message] if err
+        end
         if err == 'AuthenticationTokenExpired'
           @logger.error err
           raise AuthenticationTokenExpired.new(msg)

@@ -1,3 +1,6 @@
+* 1.1.2
+  Better error handling
+
 * 1.1.1
   It is possible use old method of username/password alongside the new OAuth method
 
