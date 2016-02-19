@@ -103,10 +103,7 @@ module BingAdsReporting
 
       def download(url)
         @logger.debug "Downloading Bing report from: #{url}"
-        curl = Curl::Easy.new(url) do |c|
-          c.use_ssl = 3
-          c.ssl_version = 3
-        end
+        curl = Curl::Easy.new(url)
         curl.perform
         curl.body_str
       end
