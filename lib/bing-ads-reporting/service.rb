@@ -12,7 +12,7 @@ module BingAdsReporting
       options = default_options(report_settings).merge(report_params)
       period = options[:period]
       report_type = options[:report_type]
-      account_id = @settings[:account_id].present? ? { 'arr:long' => @settings[:account_id] } : nil
+      account_id = @settings[:account_id].nil? ? nil : { 'arr:long' => @settings[:account_id] }
 
       begin
         response = client.call(:submit_generate_report, message: {
@@ -81,7 +81,7 @@ module BingAdsReporting
     end
 
     def report_url(id)
-      download_url = poll_report(id).body[:poll_generate_report_response][:report_request_status][:report_download_url] rescue nil
+      poll_report(id).body[:poll_generate_report_response][:report_request_status][:report_download_url] rescue nil
     end
 
     def report_body(id)
