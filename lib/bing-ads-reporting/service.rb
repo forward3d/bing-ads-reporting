@@ -12,22 +12,23 @@ module BingAdsReporting
       options = default_options(report_settings).merge(report_params)
       period = options[:period]
       report_type = options[:report_type]
+      account_id = @settings[:account_id].present? ? { 'arr:long' => @settings[:account_id] } : nil
 
       begin
         response = client.call(:submit_generate_report, message: {
           ns('ReportRequest') => {
-            ns("Format") => options[:format],
-            ns("Language") => "English",
-            ns("ReportName") => options[:report_name],
-            ns("ReturnOnlyCompleteData") => false,
-            ns("Aggregation") => options[:aggregation],
-            ns("Columns") => {
+            ns('Format') => options[:format],
+            ns('Language') => 'English',
+            ns('ReportName') => options[:report_name],
+            ns('ReturnOnlyCompleteData') => false,
+            ns('Aggregation') => options[:aggregation],
+            ns('Columns') => {
               ns("#{report_type}ReportColumn") => options[:columns]
             },
-            ns("Scope") => {
-              ns("AccountIds") => {
-                'arr:long' => @settings[:account_id]
-              }
+            ns('Scope') => {
+              ns('AccountIds') => account_id,
+              ns('AdGroups') => nil,
+              ns('Campaigns') => nil
             },
             ns("Time") => {
               # apparently order is important, and end date has to be before start date, wtf
