@@ -1,21 +1,45 @@
 module BingAdsReporting
-  class AuthenticationTokenExpired < Exception; end
-
   class Service
+    REPORT_GENERATION_RETRY_COUNT = 3
 
     def initialize(settings, logger = nil)
       @settings = settings
       @logger = logger || Logger.new($stdout)
     end
 
-    def generate_report(report_settings, report_params)
+    def generate_report(report_settings, report_params, retry_count = REPORT_GENERATION_RETRY_COUNT)
       options = default_options(report_settings).merge(report_params)
-      period = options[:period]
-      report_type = options[:report_type]
-      account_id = @settings[:account_id].nil? ? nil : { 'arr:long' => @settings[:account_id] }
+      submit_generate_report(options)
+    rescue ClientDataError => ex
+      if retry_count > 0
+        generate_report(report_settings, report_params, retry_count - 1)
+      else
+        raise ex
+      end
+    end
 
-      begin
-        response = client.call(:submit_generate_report, message: {
+    def report_ready?(id)
+      polled = poll_report(id)
+      status = polled.body[:poll_generate_report_response][:report_request_status][:status] rescue nil
+      raise "Report status: Error for ID: #{id}. TrackingId: #{polled.header[:tracking_id]}" if status == "Error"
+      status == "Success"
+    end
+
+    def report_url(id)
+      poll_report(id).body[:poll_generate_report_response][:report_request_status][:report_download_url] rescue nil
+    end
+
+    def report_body(id)
+      download(report_url(id))
+    end
+
+    private
+
+      def api_message(options)
+        period = options[:period]
+        report_type = options[:report_type]
+        account_id = @settings[:account_id].nil? ? nil : { 'arr:long' => @settings[:account_id] }
+        {
           ns('ReportRequest') => {
             ns('Format') => options[:format],
             ns('Language') => 'English',
@@ -51,44 +75,36 @@ module BingAdsReporting
               "i:type" => ns("#{report_type}ReportRequest")
             }
           }
-        })
+        }
+      end
 
-      rescue Savon::SOAPFault => e
+      def submit_generate_report(options)
+        message = api_message(options)
+        begin
+          response = client.call(:submit_generate_report, message: message)
+        rescue Savon::SOAPFault => e
+          handle_soap_fault(e)
+        end
+
+        response.body[:submit_generate_report_response][:report_request_id]
+      end
+
+      def handle_soap_fault(error)
         msg = 'unexpected error'
-        err = e.to_hash[:fault][:detail][:ad_api_fault_detail][:errors][:ad_api_error][:error_code] rescue nil
-        msg = e.to_hash[:fault][:detail][:ad_api_fault_detail][:errors][:ad_api_error][:message] if err
+        err = error.to_hash[:fault][:detail][:ad_api_fault_detail][:errors][:ad_api_error][:error_code] rescue nil
+        msg = error.to_hash[:fault][:detail][:ad_api_fault_detail][:errors][:ad_api_error][:message] if err
         if err.nil?
-          err = e.to_hash[:fault][:detail][:api_fault_detail][:operation_errors][:operation_error][:error_code] rescue nil
-          msg = e.to_hash[:fault][:detail][:api_fault_detail][:operation_errors][:operation_error][:message] if err
+          err = error.to_hash[:fault][:detail][:api_fault_detail][:operation_errors][:operation_error][:error_code] rescue nil
+          msg = error.to_hash[:fault][:detail][:api_fault_detail][:operation_errors][:operation_error][:message] if err
         end
         if err == 'AuthenticationTokenExpired'
           @logger.error err
-          raise AuthenticationTokenExpired.new(msg)
+          raise TokenExpired, msg
         end
-        @logger.error e.message
+        @logger.error error.message
         @logger.error msg
-        raise e
+        raise ClientDataError, error.message
       end
-
-      response.body[:submit_generate_report_response][:report_request_id]
-    end
-
-    def report_ready?(id)
-      polled = poll_report(id)
-      status = polled.body[:poll_generate_report_response][:report_request_status][:status] rescue nil
-      raise "Report status: Error for ID: #{id}. TrackingId: #{polled.header[:tracking_id]}" if status == "Error"
-      status == "Success"
-    end
-
-    def report_url(id)
-      poll_report(id).body[:poll_generate_report_response][:report_request_status][:report_download_url] rescue nil
-    end
-
-    def report_body(id)
-      download(report_url(id))
-    end
-
-    private
 
       def default_options(report_settings)
         { format: report_settings[:report_format],

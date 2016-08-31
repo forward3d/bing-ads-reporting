@@ -4,4 +4,6 @@ require 'logger'
 require 'savon'
 
 module BingAdsReporting
+  class TokenExpired < Exception; end
+  class ClientDataError < Exception; end
 end
