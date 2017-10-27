@@ -7,7 +7,7 @@ class TestReport < Test::Unit::TestCase
   def setup
     yml = YAML.load_file(File.join(File.dirname(File.expand_path(__FILE__)), "credentials.yml")) # create this if you want to test!
     @service = BingAdsReporting::Service.new(yml)
-    @id_to_check = "3266163982" # set for tests to pass
+    @id_to_check = "30000000980814567"
   end
     
   def test_scheduling_report
@@ -25,15 +25,22 @@ class TestReport < Test::Unit::TestCase
   end
 
   def test_gets_report_state
-    puts @service.report_ready?(@id_to_check)
+    response = @service.report_ready?(@id_to_check)
+    flunk("report_ready? should return true or false") unless [true, false].include?(response)
   end
 
   def test_gets_report_url
-    puts @service.report_url(@id_to_check)
+    url = @service.send :report_url, @id_to_check
+    return if url.nil?
+    assert_match(/^https\:.+bingads.+Download.+/, url)
   end
-  
+
   def test_gets_report
-    puts @service.report_body(@id_to_check)
+    body = @service.report_body(@id_to_check)
+    return if body.nil?
+    assert_equal String, body.class
+    assert body.size > 0
+    assert_equal 'ASCII-8BIT', body.encoding.to_s
   end
   
 end

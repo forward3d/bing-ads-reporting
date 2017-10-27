@@ -1,3 +1,7 @@
+* 1.3.0
+  Using API v11 instead of v9
+  report_body can return nil as API doesn't return empty files anymore
+
 * 1.2.0
   Does not set SSL version 3 when trying to download the file, as that fails with "SSL connect error"
 
