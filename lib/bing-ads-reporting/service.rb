@@ -2,6 +2,7 @@ module BingAdsReporting
   class AuthenticationTokenExpired < Exception; end
   
   class Service
+    SUCCESS = 'Success'
 
     def initialize(settings, logger = nil)
       @settings = settings
@@ -19,7 +20,8 @@ module BingAdsReporting
             ns("Format") => options[:format],
             ns("Language") => "English",
             ns("ReportName") => options[:report_name],
-            ns("ReturnOnlyCompleteData") => false,
+            ns("ReturnOnlyCompleteData") => 'false',
+
             ns("Aggregation") => options[:aggregation],
             ns("Columns") => {
               ns("#{report_type}ReportColumn") => options[:columns]
@@ -44,8 +46,10 @@ module BingAdsReporting
               # ns("PredefinedTime") => options[:time]
             }
           },
-          :attributes! => {ns("ReportRequest") => {"xmlns:i" => "http://www.w3.org/2001/XMLSchema-instance",
-                                                   "i:type" => ns("#{report_type}ReportRequest")}
+          :attributes! => {ns("ReportRequest") => {
+                                                   "i:type" => ns("#{report_type}ReportRequest"),
+                                                   "i:nil" => 'false'
+                                                   }
           }
         })
         
@@ -73,18 +77,24 @@ module BingAdsReporting
       polled = poll_report(id)
       status = polled.body[:poll_generate_report_response][:report_request_status][:status] rescue nil
       raise "Report status: Error for ID: #{id}. TrackingId: #{polled.header[:tracking_id]}" if status == "Error"
-      status == "Success"
+      status == SUCCESS
     end
     
-    def report_url(id)
-      download_url = poll_report(id).body[:poll_generate_report_response][:report_request_status][:report_download_url] rescue nil
-    end
-    
+    # returns nil if there is no data
     def report_body(id)
       download(report_url(id))
     end
   
     private
+
+      def report_url(id)
+        polled = poll_report(id)
+        status = polled.body[:poll_generate_report_response][:report_request_status][:status] rescue nil
+        download_url = polled.body[:poll_generate_report_response][:report_request_status][:report_download_url] rescue nil
+        return nil if download_url.nil? && status == SUCCESS
+        raise "Report URL is not available for report id #{id}" unless download_url
+        download_url
+      end
   
       def default_options(report_settings)
         { format: report_settings[:report_format],
@@ -95,13 +105,26 @@ module BingAdsReporting
       end
       
       def poll_report(id)
-        client.call(:poll_generate_report, message: {
-          ns("ReportRequestId") => id,
-          :attributes! => { ns("ReportRequestId") => {"xsi:nil" => false} }
-        })
+        begin
+          client.call(:poll_generate_report, message: {
+            ns("ReportRequestId") => id,
+          })
+        rescue Savon::SOAPFault => e
+          err = e.to_hash[:fault][:detail][:ad_api_fault_detail][:errors][:ad_api_error][:error_code] rescue nil
+          msg = e.to_hash[:fault][:detail][:ad_api_fault_detail][:errors][:ad_api_error][:message] if err
+          if err.nil?
+            err = e.to_hash[:fault][:detail][:api_fault_detail][:operation_errors][:operation_error][:error_code] rescue nil
+            msg = e.to_hash[:fault][:detail][:api_fault_detail][:operation_errors][:operation_error][:message] if err
+          end
+          if err == 'AuthenticationTokenExpired'
+            @logger.error err
+            raise AuthenticationTokenExpired.new(msg)
+          end
+        end
       end
 
       def download(url)
+        return unless url
         @logger.debug "Downloading Bing report from: #{url}"
         curl = Curl::Easy.new(url)
         curl.perform
@@ -123,17 +146,19 @@ module BingAdsReporting
                                               ns('DeveloperToken') => @settings[:developerToken],
                                               ns('AuthenticationToken') => @settings[:authenticationToken] }
         end
-        Savon.client({wsdl: "https://api.bingads.microsoft.com/Api/Advertiser/Reporting/V9/ReportingService.svc?wsdl",
+        Savon.client({
+                      wsdl: "https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/V11/ReportingService.svc?singleWsdl",
                       log_level: :info,
-                      namespaces: {"xmlns:arr" => 'http://schemas.microsoft.com/2003/10/Serialization/Arrays'},
+                      namespaces: { "xmlns:arr" => 'http://schemas.microsoft.com/2003/10/Serialization/Arrays',
+                                    "xmlns:i" => "http://www.w3.org/2001/XMLSchema-instance" },
                       soap_header: header
                       })
-                      # .merge({pretty_print_xml: true, log_level: :debug})) # for more logging
+                      # .merge({pretty_print_xml: true, log_level: :debug, log: true, logger: @logger})) # for more logging
       end
 
       def ns(str)
         "tns:#{str}"
       end
-  
+
   end
 end
