@@ -1,8 +1,10 @@
+require_relative 'core_service'
+
 module BingAdsReporting
   class BulkService < CoreService
 
-    WDSL = "https://bulk.api.bingads.microsoft.com/Api/Advertiser/CampaignManagement/V11/BulkService.svc?wsdl".freeze
-    FAILED_STATUS = "Failed".freeze
+    WDSL = 'https://bulk.api.bingads.microsoft.com/Api/Advertiser/CampaignManagement/V11/BulkService.svc?wsdl'.freeze
+    FAILED_STATUS = 'Failed'.freeze
     SUCCESS_STATUS = 'Completed'.freeze
 
     private
@@ -29,31 +31,31 @@ module BingAdsReporting
       data_scope = options[:data_scope]
 
       message = {
-        ns("AccountIds") => {
+        ns('AccountIds') => {
           'arr:long' => @settings[:accountId]
         },
-        ns("CompressionType") => 'Zip',
-        ns("DataScope") => data_scope,
-        ns("DownloadEntities") => {
-          ns("DownloadEntity") => options[:download_entities]
+        ns('CompressionType') => 'Zip',
+        ns('DataScope') => data_scope,
+        ns('DownloadEntities') => {
+          ns('DownloadEntity') => options[:download_entities]
         },
-        ns("DownloadFileType") => options[:report_format],
-        ns("FormatVersion") => '5.0',
-        ns("LastSyncTimeInUtc") => true,
+        ns('DownloadFileType') => options[:report_format],
+        ns('FormatVersion') => '5.0',
+        ns('LastSyncTimeInUtc') => true,
       }
 
       if data_scope == 'EntityPerformanceData'
-        message[ns("PerformanceStatsDateRange")] = {
+        message[ns('PerformanceStatsDateRange')] = {
           # apparently order is important, and end date has to be before start date, wtf
-          ns("CustomDateRangeEnd") => {
-            ns("Day") => period.to.day,
-            ns("Month") => period.to.month,
-            ns("Year") => period.to.year
+          ns('CustomDateRangeEnd') => {
+            ns('Day') => period.to.day,
+            ns('Month') => period.to.month,
+            ns('Year') => period.to.year
           },
-          ns("CustomDateRangeStart") => {
-            ns("Day") => period.from.day,
-            ns("Month") => period.from.month,
-            ns("Year") => period.from.year
+          ns('CustomDateRangeStart') => {
+            ns('Day') => period.from.day,
+            ns('Month') => period.from.month,
+            ns('Year') => period.from.year
           }
           # ns("PredefinedTime") => options[:time]
         }
@@ -66,7 +68,7 @@ module BingAdsReporting
     end
 
     def generate_poll_message(id)
-      { ns("RequestId") => id }
+      { ns('RequestId') => id }
     end
 
     def get_report_id(body)

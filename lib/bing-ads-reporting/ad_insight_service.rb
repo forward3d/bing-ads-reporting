@@ -1,7 +1,9 @@
+require_relative 'core_service'
+
 module BingAdsReporting
   class AdInsightService < CoreService
-    WDSL = "https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/V11/ReportingService.svc?singleWsdl".freeze
-    FAILED_STATUS = "Error".freeze
+    WDSL = 'https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/V11/ReportingService.svc?singleWsdl'.freeze
+    FAILED_STATUS = 'Error'.freeze
     SUCCESS_STATUS = 'Success'.freeze
 
     private
@@ -27,38 +29,38 @@ module BingAdsReporting
       report_type = options[:report_type]
 
       { ns('ReportRequest') => {
-          ns("Format") => options[:report_format],
-          ns("Language") => "English",
-          ns("ReportName") => options[:report_name],
-          ns("ReturnOnlyCompleteData") => 'false',
+          ns('Format') => options[:report_format],
+          ns('Language') => 'English',
+          ns('ReportName') => options[:report_name],
+          ns('ReturnOnlyCompleteData') => 'false',
 
-          ns("Aggregation") => options[:aggregation],
-          ns("Columns") => {
+          ns('Aggregation') => options[:aggregation],
+          ns('Columns') => {
             ns("#{report_type}ReportColumn") => options[:columns]
           },
-          ns("Scope") => {
-            ns("AccountIds") => {
+          ns('Scope') => {
+            ns('AccountIds') => {
               'arr:long' => @settings[:accountId]
             }
           },
-          ns("Time") => {
+          ns('Time') => {
             # apparently order is important, and end date has to be before start date, wtf
-            ns("CustomDateRangeEnd") => {
-              ns("Day") => period.to.day,
-              ns("Month") => period.to.month,
-              ns("Year") => period.to.year
+            ns('CustomDateRangeEnd') => {
+              ns('Day') => period.to.day,
+              ns('Month') => period.to.month,
+              ns('Year') => period.to.year
             },
-            ns("CustomDateRangeStart") => {
-              ns("Day") => period.from.day,
-              ns("Month") => period.from.month,
-              ns("Year") => period.from.year
+            ns('CustomDateRangeStart') => {
+              ns('Day') => period.from.day,
+              ns('Month') => period.from.month,
+              ns('Year') => period.from.year
             }
-            # ns("PredefinedTime") => options[:time]
+            # ns('PredefinedTime') => options[:time]
           }
         },
-        :attributes! => {ns("ReportRequest") => {
-                                                 "i:type" => ns("#{report_type}ReportRequest"),
-                                                 "i:nil" => 'false'
+        :attributes! => {ns('ReportRequest') => {
+                                                 'i:type' => ns("#{report_type}ReportRequest"),
+                                                 'i:nil' => 'false'
                                                  }
         }
       }
@@ -69,7 +71,7 @@ module BingAdsReporting
     end
 
     def generate_poll_message(id)
-      { ns("ReportRequestId") => id }
+      { ns('ReportRequestId') => id }
     end
 
     def get_report_id(body)
