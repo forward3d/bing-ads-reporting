@@ -13,7 +13,6 @@ module BingAdsReporting
       WDSL
     end
 
-
     def failed_status
       FAILED_STATUS
     end
@@ -22,8 +21,12 @@ module BingAdsReporting
       SUCCESS_STATUS
     end
 
-    def report_operation
-      :download_campaigns_by_account_ids
+    def report_operation(options)
+      options[report_type].split(/(?=[A-Z])/).join('_').downcase.to_sym
+    end
+
+    def report_operation_response(options)
+      "#{report_operation(options)}_response".to_sym
     end
 
     def generate_report_message(options)
@@ -71,8 +74,8 @@ module BingAdsReporting
       { ns('RequestId') => id }
     end
 
-    def get_report_id(body)
-      body[:download_campaigns_by_account_ids_response][:download_request_id]
+    def get_report_id(body, options)
+      body[report_operation_response(options)][:download_request_id]
     end
 
     def get_status(body)

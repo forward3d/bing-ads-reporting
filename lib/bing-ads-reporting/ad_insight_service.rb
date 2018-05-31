@@ -20,7 +20,7 @@ module BingAdsReporting
       SUCCESS_STATUS
     end
 
-    def report_operation
+    def report_operation(_)
       :submit_generate_report
     end
 
@@ -74,7 +74,7 @@ module BingAdsReporting
       { ns('ReportRequestId') => id }
     end
 
-    def get_report_id(body)
+    def get_report_id(body, _)
       body[:submit_generate_report_response][:report_request_id]
     end
 

@@ -11,7 +11,7 @@ module BingAdsReporting
     def generate_report(report_settings, report_params)
       options = default_options(report_settings).merge(report_params)
       begin
-        response = client.call(report_operation, message: generate_report_message(options))
+        response = client.call(report_operation(options), message: generate_report_message(options))
       rescue Savon::SOAPFault => e
         msg = 'unexpected error'
         err = e.to_hash[:fault][:detail][:ad_api_fault_detail][:errors][:ad_api_error][:error_code] rescue nil
@@ -29,7 +29,7 @@ module BingAdsReporting
         raise e
       end
 
-      get_report_id(response.body)
+      get_report_id(response.body, options)
     end
 
     # returns nil if there is no data
@@ -47,47 +47,47 @@ module BingAdsReporting
     private
 
     def wdsl
-      # override_in_subclass
+      raise NotImplementedError, "subclass did not define ##{__method__.to_s}"
     end
 
     def failed_status
-      # override_in_subclass
+      raise NotImplementedError, "subclass did not define ##{__method__.to_s}"
     end
 
     def success_status
-      # override_in_subclass
+      raise NotImplementedError, "subclass did not define ##{__method__.to_s}"
     end
 
-    def report_operation
-      # override_in_subclass
+    def report_operation(option)
+      raise NotImplementedError, "subclass did not define ##{__method__.to_s}"
     end
 
     def generate_report_message(options)
-      # override_in_subclass
+      raise NotImplementedError, "subclass did not define ##{__method__.to_s}"
     end
 
     def poll_operation
-      # override_in_subclass
+      raise NotImplementedError, "subclass did not define ##{__method__.to_s}"
     end
 
     def generate_poll_message(id)
-      # override_in_subclass
+      raise NotImplementedError, "subclass did not define ##{__method__.to_s}"
     end
 
-    def get_report_id(body)
-      # override_in_subclass
+    def get_report_id(body, options)
+      raise NotImplementedError, "subclass did not define ##{__method__.to_s}"
     end
 
     def get_status(body)
-      # override_in_subclass
+      raise NotImplementedError, "subclass did not define ##{__method__.to_s}"
     end
 
     def get_download_url(body)
-      # override_in_subclass
+      raise NotImplementedError, "subclass did not define ##{__method__.to_s}"
     end
 
     def default_options(report_settings)
-      ({ report_name: "MyReport" }).merge(report_settings.map { |k,v| [k.to_sym, v] }.to_h)
+      ({ report_name: 'MyReport' }).merge(report_settings.map { |k,v| [k.to_sym, v] }.to_h)
     end
 
     def poll_report(id)
@@ -142,8 +142,8 @@ module BingAdsReporting
       Savon.client({
                     wsdl: wdsl,
                     log_level: :info,
-                    namespaces: { "xmlns:arr" => 'http://schemas.microsoft.com/2003/10/Serialization/Arrays',
-                                  "xmlns:i" => "http://www.w3.org/2001/XMLSchema-instance" },
+                    namespaces: { 'xmlns:arr' => 'http://schemas.microsoft.com/2003/10/Serialization/Arrays',
+                                  'xmlns:i' => "http://www.w3.org/2001/XMLSchema-instance" },
                     soap_header: header
                     })
                     # .merge({pretty_print_xml: true, log_level: :debug, log: true, logger: @logger})) # for more logging
