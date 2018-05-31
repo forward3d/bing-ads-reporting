@@ -2,7 +2,6 @@ require_relative 'core_service'
 
 module BingAdsReporting
   class BulkService < CoreService
-
     WDSL = 'https://bulk.api.bingads.microsoft.com/Api/Advertiser/CampaignManagement/V11/BulkService.svc?wsdl'.freeze
     FAILED_STATUS = 'Failed'.freeze
     SUCCESS_STATUS = 'Completed'.freeze
@@ -60,7 +59,6 @@ module BingAdsReporting
             ns('Month') => period.from.month,
             ns('Year') => period.from.year
           }
-          # ns("PredefinedTime") => options[:time]
         }
       end
       message

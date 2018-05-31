@@ -127,17 +127,17 @@ module BingAdsReporting
     def client
       if @settings[:username] && @settings[:password]
         header = {ns('ApplicationToken') => @settings[:applicationToken],
-                                            ns('CustomerAccountId') => @settings[:accountId],
-                                            ns('CustomerId') => @settings[:customerId],
-                                            ns('DeveloperToken') => @settings[:developerToken],
-                                            ns('UserName') => @settings[:username],
-                                            ns('Password') => @settings[:password] }
+                  ns('CustomerAccountId') => @settings[:accountId],
+                  ns('CustomerId') => @settings[:customerId],
+                  ns('DeveloperToken') => @settings[:developerToken],
+                  ns('UserName') => @settings[:username],
+                  ns('Password') => @settings[:password] }
       else
         header = {ns('ApplicationToken') => @settings[:applicationToken],
-                                            ns('CustomerAccountId') => @settings[:accountId],
-                                            ns('CustomerId') => @settings[:customerId],
-                                            ns('DeveloperToken') => @settings[:developerToken],
-                                            ns('AuthenticationToken') => @settings[:authenticationToken] }
+                  ns('CustomerAccountId') => @settings[:accountId],
+                  ns('CustomerId') => @settings[:customerId],
+                  ns('DeveloperToken') => @settings[:developerToken],
+                  ns('AuthenticationToken') => @settings[:authenticationToken] }
       end
       Savon.client({
                     wsdl: wdsl,
@@ -146,7 +146,6 @@ module BingAdsReporting
                                   'xmlns:i' => "http://www.w3.org/2001/XMLSchema-instance" },
                     soap_header: header
                     })
-                    # .merge({pretty_print_xml: true, log_level: :debug, log: true, logger: @logger})) # for more logging
     end
 
 

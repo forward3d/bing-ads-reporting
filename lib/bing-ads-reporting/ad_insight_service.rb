@@ -28,7 +28,7 @@ module BingAdsReporting
       period = options[:period]
       report_type = options[:report_type]
 
-      { ns('ReportRequest') => {
+      message = { ns('ReportRequest') => {
           ns('Format') => options[:report_format],
           ns('Language') => 'English',
           ns('ReportName') => options[:report_name],
@@ -55,15 +55,17 @@ module BingAdsReporting
               ns('Month') => period.from.month,
               ns('Year') => period.from.year
             }
-            # ns('PredefinedTime') => options[:time]
           }
         },
-        :attributes! => {ns('ReportRequest') => {
-                                                 'i:type' => ns("#{report_type}ReportRequest"),
-                                                 'i:nil' => 'false'
-                                                 }
+        :attributes! => {
+          ns('ReportRequest') => {
+            'i:type' => ns("#{report_type}ReportRequest"),
+            'i:nil' => 'false'
+          }
         }
       }
+
+      message
     end
 
     def poll_operation

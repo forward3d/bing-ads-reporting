@@ -6,10 +6,10 @@ class TestReport < Test::Unit::TestCase
 
   def setup
     yml = YAML.load_file(File.join(File.dirname(File.expand_path(__FILE__)), "credentials.yml")) # create this if you want to test!
-    @service = BingAdsReporting::Service.new(yml)
     @id_to_check = "30000000980814567"
+    @service = BingAdsReporting::AdInsightService.new(yml)
   end
-    
+
   def test_scheduling_report
     period = Datebox::Period.new(Date.today - 1, Date.today - 1)
     id = @service.generate_report({report_type: 'KeywordPerformance',
@@ -42,5 +42,5 @@ class TestReport < Test::Unit::TestCase
     assert body.size > 0
     assert_equal 'ASCII-8BIT', body.encoding.to_s
   end
-  
+
 end
