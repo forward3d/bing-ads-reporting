@@ -21,7 +21,7 @@ module BingAdsReporting
     end
 
     def report_operation(options)
-      options[report_type].split(/(?=[A-Z])/).join('_').downcase.to_sym
+      options[:report_type].split(/(?=[A-Z])/).join('_').downcase.to_sym
     end
 
     def report_operation_response(options)
