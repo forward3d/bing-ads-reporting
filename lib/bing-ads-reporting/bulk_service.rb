@@ -1,7 +1,7 @@
-require_relative 'core_service'
+require_relative 'service_core'
 
 module BingAdsReporting
-  class BulkService < CoreService
+  class BulkService < ServiceCore
     WDSL = 'https://bulk.api.bingads.microsoft.com/Api/Advertiser/CampaignManagement/V11/BulkService.svc?wsdl'.freeze
     FAILED_STATUS = 'Failed'.freeze
     SUCCESS_STATUS = 'Completed'.freeze
