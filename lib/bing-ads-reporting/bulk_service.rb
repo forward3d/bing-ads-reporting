@@ -2,7 +2,7 @@ require_relative 'service_core'
 
 module BingAdsReporting
   class BulkService < ServiceCore
-    WDSL = 'https://bulk.api.bingads.microsoft.com/Api/Advertiser/CampaignManagement/V11/BulkService.svc?wsdl'.freeze
+    WDSL = 'https://bulk.api.bingads.microsoft.com/Api/Advertiser/CampaignManagement/V12/BulkService.svc?wsdl'.freeze
     FAILED_STATUS = 'Failed'.freeze
     SUCCESS_STATUS = 'Completed'.freeze
 
@@ -42,7 +42,7 @@ module BingAdsReporting
           ns('DownloadEntity') => options[:download_entities]
         },
         ns('DownloadFileType') => options[:report_format],
-        ns('FormatVersion') => '5.0',
+        ns('FormatVersion') => '6.0',
         ns('LastSyncTimeInUtc') => true,
       }
 

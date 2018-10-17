@@ -2,7 +2,7 @@ require_relative 'service_core'
 
 module BingAdsReporting
   class AdInsightService < ServiceCore
-    WDSL = 'https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/V11/ReportingService.svc?singleWsdl'.freeze
+    WDSL = 'https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/V12/ReportingService.svc?singleWsdl'.freeze
     FAILED_STATUS = 'Error'.freeze
     SUCCESS_STATUS = 'Success'.freeze
 
