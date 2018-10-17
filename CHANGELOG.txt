@@ -1,5 +1,6 @@
 * 2.1.0
   Using API V12
+  API12 is no longer support authentication via Username/password.
 
 * 2.0.0
   BingAdsReporting::Service class renamed to BingAdsReporting::AdInsightService
