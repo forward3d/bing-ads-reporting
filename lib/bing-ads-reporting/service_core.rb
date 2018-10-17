@@ -1,6 +1,6 @@
 module BingAdsReporting
-  class AuthenticationTokenExpired < Exception; end
-  class AuthenticationViaOAuthIsRequired < Exception; end
+  class AuthenticationTokenExpired < StandardError; end
+  class AuthenticationViaOAuthIsRequired < StandardError; end
 
   class ServiceCore
 
