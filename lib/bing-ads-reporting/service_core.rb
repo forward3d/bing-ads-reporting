@@ -1,5 +1,6 @@
 module BingAdsReporting
-  class AuthenticationTokenExpired < Exception; end
+  class AuthenticationTokenExpired < StandardError; end
+  class AuthenticationViaOAuthIsRequired < StandardError; end
 
   class ServiceCore
 
@@ -126,12 +127,7 @@ module BingAdsReporting
 
     def client
       if @settings[:username] && @settings[:password]
-        header = {ns('ApplicationToken') => @settings[:applicationToken],
-                  ns('CustomerAccountId') => @settings[:accountId],
-                  ns('CustomerId') => @settings[:customerId],
-                  ns('DeveloperToken') => @settings[:developerToken],
-                  ns('UserName') => @settings[:username],
-                  ns('Password') => @settings[:password] }
+        raise AuthenticationViaOAuthIsRequired, 'Microsoft Account Authentication via OAuth is Required'
       else
         header = {ns('ApplicationToken') => @settings[:applicationToken],
                   ns('CustomerAccountId') => @settings[:accountId],
