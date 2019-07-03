@@ -1,3 +1,5 @@
+require 'savon'
+
 module BingAdsReporting
   class AuthenticationTokenExpired < StandardError; end
   class AuthenticationViaOAuthIsRequired < StandardError; end

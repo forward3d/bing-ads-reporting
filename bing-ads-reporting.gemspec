@@ -20,6 +20,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'datebox', '~> 0.5.0'
   gem.add_dependency 'savon',   '~> 2.12.0'
   gem.add_dependency 'curb',    '~> 0.9.10'
+  gem.add_dependency 'oauth2',  '~> 1.4.1'
 
   gem.add_development_dependency 'rspec', '~> 3.4.0'
   gem.add_development_dependency 'reek', '~> 5.4.0'
