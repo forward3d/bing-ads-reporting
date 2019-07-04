@@ -51,42 +51,37 @@ describe BingAdsReporting::AdInsightService do
     end
 
     context 'request error' do
-      let(:xml) do
-        '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-          <s:Header>
-            <h:TrackingId xmlns:h="https://bingads.microsoft.com/Reporting/v12">d012a57e-8d84-456f-9562-b223a6d6a348</h:TrackingId>
-          </s:Header>
-          <s:Body>
-            <s:Fault>
-              <faultcode>s:Server</faultcode>
-              <faultstring xml:lang=\"en-US\">Invalid client data. Check the SOAP fault details for more information</faultstring>
-              <detail>
-                <ApiFaultDetail xmlns=\"https://bingads.microsoft.com/Reporting/v12\" xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\">
-                  <TrackingId xmlns=\"https://adapi.microsoft.com\">30f7c77f-d5b1-4ac3-8c28-05e7ab955233</TrackingId>
-                  <BatchErrors/>
-                  <OperationErrors>
-                    <OperationError>
-                      <Code>2010</Code>
-                      <Details i:nil=\"true\"/>
-                      <ErrorCode>InvalidCustomDateRangeEnd</ErrorCode>
-                      <Message>The specified report time contains an invalid custom date range end. Please submit a report request with valid start and end dates for the custom date range.</Message>
-                    </OperationError>
-                  </OperationErrors>
-                </ApiFaultDetail>
-              </detail>
-            </s:Fault>
-          </s:Body>
-        </s:Envelope>'
+      let(:error_hash) do
+        {
+          fault: {
+            faultcode: 's:Server',
+          faultstring: 'Invalid client data. Check the SOAP fault details for more information',
+          detail: {
+            api_fault_detail: {
+              :tracking_id => 'c782ddaa-b735-404e-8111-b61f1776ae71',
+              :batch_errors => nil,
+              :operation_errors => {
+                operation_error: {
+                  code: '2010',
+                  details: nil,
+                  error_code: 'InvalidCustomDateRangeEnd',
+                  message: 'The specified report time contains an invalid custom date range end. Please submit a report request with valid start and end dates for the custom date range.'
+                }
+              },
+                  :@xmlns => 'https://bingads.microsoft.com/Reporting/v12', :"@xmlns:i" => 'http://www.w3.org/2001/XMLSchema-instance'
+            }
+          }
+          }
+        }
       end
-      let(:response_double)  { instance_double('Savon::Response', body: xml) }
-      let(:encoded_response) { nori.parse(xml) }
+      let(:response_double) { instance_double('Savon::Response', body: '') }
       let(:savon_exception) do
         Savon::SOAPFault.new(response_double, nori)
       end
 
       before do
         allow_any_instance_of(Savon::SOAPFault).to receive(:to_s).and_return('Error Message')
-        allow_any_instance_of(Savon::SOAPFault).to receive(:to_hash) { encoded_response }
+        allow_any_instance_of(Savon::SOAPFault).to receive(:to_hash) { error_hash }
         allow_any_instance_of(Savon::Client).to receive(:call).and_raise(savon_exception)
       end
 
