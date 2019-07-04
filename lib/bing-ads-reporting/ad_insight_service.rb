@@ -28,43 +28,60 @@ module BingAdsReporting
       period = options[:period]
       report_type = options[:report_type]
 
-      message = { ns('ReportRequest') => {
+      {
+        ns('ReportRequest') => report_request(period, options, report_type),
+        :attributes! => report_attributes(report_type)
+      }
+    end
+
+    def report_request(period, options, report_type)
+      {
         ns('Format') => options[:report_format],
-          ns('Language') => 'English',
-          ns('ReportName') => options[:report_name],
-          ns('ReturnOnlyCompleteData') => 'false',
+        ns('Language') => 'English',
+        ns('ReportName') => options[:report_name],
+        ns('ReturnOnlyCompleteData') => 'false',
+        ns('Aggregation') => options[:aggregation],
+        ns('Columns') => { ns("#{report_type}ReportColumn") => options[:columns] },
+        ns('Scope') => report_request_scope,
+        ns('Time') => time(period)
+      }
+    end
 
-          ns('Aggregation') => options[:aggregation],
-          ns('Columns') => {
-            ns("#{report_type}ReportColumn") => options[:columns]
-          },
-          ns('Scope') => {
-            ns('AccountIds') => {
-              'arr:long' => @settings[:accountId]
-            }
-          },
-          ns('Time') => {
-            # apparently order is important, and end date has to be before start date, wtf
-            ns('CustomDateRangeEnd') => {
-              ns('Day') => period.to.day,
-              ns('Month') => period.to.month,
-              ns('Year') => period.to.year
-            },
-            ns('CustomDateRangeStart') => {
-              ns('Day') => period.from.day,
-              ns('Month') => period.from.month,
-              ns('Year') => period.from.year
-            }
-          }
-      },
-        :attributes! => {
-          ns('ReportRequest') => {
-            'i:type' => ns("#{report_type}ReportRequest"),
-            'i:nil' => 'false'
-          }
-        } }
+    def report_request_scope
+      {
+        ns('AccountIds') => {
+          'arr:long' => @settings[:accountId]
+        }
+      }
+    end
 
-      message
+    def report_attributes(report_type)
+      {
+        ns('ReportRequest') => {
+          'i:type' => ns("#{report_type}ReportRequest"),
+          'i:nil' => 'false'
+        }
+      }
+    end
+
+    def time(period)
+      {
+        # apparently order is important, and end date has to be before start date, wtf
+        ns('CustomDateRangeEnd') => scope_data_range(period.to),
+        ns('CustomDateRangeStart') => scope_data_range(period.from)
+      }
+    end
+
+    def scope_data_range(period_range)
+      day_key = ns('Day')
+      month_key = ns('Month')
+      year_key = ns('Year')
+
+      {
+        day_key => period_range.day,
+        month_key => period_range.month,
+        year_key => period_range.year
+      }
     end
 
     def poll_operation
