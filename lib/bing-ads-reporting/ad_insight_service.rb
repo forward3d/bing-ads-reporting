@@ -71,8 +71,8 @@ module BingAdsReporting
       :poll_generate_report
     end
 
-    def generate_poll_message(id)
-      { ns('ReportRequestId') => id }
+    def generate_poll_message(report_id)
+      { ns('ReportRequestId') => report_id }
     end
 
     def get_report_id(body, _)
