@@ -4,7 +4,7 @@ require 'nori'
 require 'datebox'
 require 'curl'
 
-describe BingAdsReporting::AdInsightService do
+describe BingAdsReporting::ServiceCore do
   let(:dev_token)   { '0000000123DF' }
   let(:app_token)   { '0000000SD313' }
   let(:auth_token)  { 'MS12399031jj' }
@@ -13,7 +13,7 @@ describe BingAdsReporting::AdInsightService do
   let(:report_id)   { '30000003027034680' }
   let(:period)      { Datebox::Period.new('2019-06-28', '2019-06-30') }
   let(:nori)        { Nori.new(strip_namespaces: true, convert_tags_to: ->(tag) { tag.snakecase.to_sym }) }
-  let(:service)     { described_class.new(account_settings) }
+  let(:service)     { BingAdsReporting::AdInsightService.new(account_settings) }
   let(:encoded_response) { nori.parse(xml_response)[:envelope][:body] }
   let(:response_double)  { instance_double('Savon::Response', header: {}, body: encoded_response) }
   let(:account_settings) do
@@ -33,11 +33,13 @@ describe BingAdsReporting::AdInsightService do
   describe '#generate_report' do
     subject(:report_test) { service.generate_report(account_settings, period: period) }
 
-    context 'request report submission' do
+    context 'when requesting report submission' do
       let(:xml_response) do
         '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
           <s:Header>
-            <h:TrackingId xmlns:h="https://bingads.microsoft.com/Reporting/v12">d012a57e-8d84-456f-9562-b223a6d6a348</h:TrackingId>
+            <h:TrackingId xmlns:h="https://bingads.microsoft.com/Reporting/v12">
+              d012a57e-8d84-456f-9562-b223a6d6a348
+            </h:TrackingId>
           </s:Header>
           <s:Body>
             <SubmitGenerateReportResponse xmlns="https://bingads.microsoft.com/Reporting/v12">
@@ -47,10 +49,10 @@ describe BingAdsReporting::AdInsightService do
         </s:Envelope>'
       end
 
-      it { expect(subject).to eq(report_id) }
+      it { expect(report_test).to eq(report_id) }
     end
 
-    context 'request error' do
+    context 'when request error happen' do
       let(:error_hash) do
         {
           fault: {
@@ -65,10 +67,12 @@ describe BingAdsReporting::AdInsightService do
                   code: '2010',
                   details: nil,
                   error_code: 'InvalidCustomDateRangeEnd',
-                  message: 'The specified report time contains an invalid custom date range end. Please submit a report request with valid start and end dates for the custom date range.'
+                  message: 'The specified report time contains an invalid custom date range end.
+                   Please submit a report request with valid start and end dates for the custom date range.'
                 }
               },
-                  :@xmlns => 'https://bingads.microsoft.com/Reporting/v12', :"@xmlns:i" => 'http://www.w3.org/2001/XMLSchema-instance'
+                  :@xmlns => 'https://bingads.microsoft.com/Reporting/v12',
+                  :"@xmlns:i" => 'http://www.w3.org/2001/XMLSchema-instance'
             }
           }
           }

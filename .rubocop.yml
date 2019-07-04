@@ -10,6 +10,7 @@ AllCops:
   Exclude:
     - '**/vendor/**/.*'
     - 'vendor/**/*'
+    - 'spec/support/**/*'
     - 'sql_control_client/**/*'
 
 Rails:
@@ -260,6 +261,12 @@ Metrics/BlockLength:
   ]
 
 RSpec/SubjectStub:
+  Enabled: false
+
+RSpec/AnyInstance:
+  Enabled: false
+
+RSpec/FilePath:
   Enabled: false
 
 RSpec/LeadingSubject:
