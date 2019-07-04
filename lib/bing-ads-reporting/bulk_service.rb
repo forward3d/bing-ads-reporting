@@ -43,7 +43,7 @@ module BingAdsReporting
         },
         ns('DownloadFileType') => options[:report_format],
         ns('FormatVersion') => '6.0',
-        ns('LastSyncTimeInUtc') => true,
+        ns('LastSyncTimeInUtc') => true
       }
 
       if data_scope == 'EntityPerformanceData'
@@ -77,12 +77,15 @@ module BingAdsReporting
     end
 
     def get_status(body)
-      body[:get_bulk_download_status_response][:request_status] rescue nil
+      body[:get_bulk_download_status_response][:request_status]
+    rescue StandardError
+      nil
     end
 
     def get_download_url(body)
-      body[:get_bulk_download_status_response][:result_file_url] rescue nil
+      body[:get_bulk_download_status_response][:result_file_url]
+    rescue StandardError
+      nil
     end
-
   end
 end

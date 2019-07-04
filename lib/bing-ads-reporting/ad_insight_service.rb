@@ -29,7 +29,7 @@ module BingAdsReporting
       report_type = options[:report_type]
 
       message = { ns('ReportRequest') => {
-          ns('Format') => options[:report_format],
+        ns('Format') => options[:report_format],
           ns('Language') => 'English',
           ns('ReportName') => options[:report_name],
           ns('ReturnOnlyCompleteData') => 'false',
@@ -56,14 +56,13 @@ module BingAdsReporting
               ns('Year') => period.from.year
             }
           }
-        },
+      },
         :attributes! => {
           ns('ReportRequest') => {
             'i:type' => ns("#{report_type}ReportRequest"),
             'i:nil' => 'false'
           }
-        }
-      }
+        } }
 
       message
     end
@@ -81,12 +80,15 @@ module BingAdsReporting
     end
 
     def get_status(body)
-      body[:poll_generate_report_response][:report_request_status][:status] rescue nil
+      body[:poll_generate_report_response][:report_request_status][:status]
+    rescue StandardError
+      nil
     end
 
     def get_download_url(body)
-      body[:poll_generate_report_response][:report_request_status][:report_download_url] rescue nil
+      body[:poll_generate_report_response][:report_request_status][:report_download_url]
+    rescue StandardError
+      nil
     end
-
   end
 end
