@@ -80,14 +80,19 @@ module BingAdsReporting
     end
 
     def report_url(report_id)
-      polled = poll_report(report_id)
-      polled_body = polled.body
-      status = get_status(polled_body)
-      download_url = get_download_url(polled_body)
-      return if !download_url && status == success_status
+      info = report_info(report_id)
+      download_url = info[:url]
+      return if !download_url && info[:status] == success_status
       raise "Report URL is not available for report id #{report_id}" unless download_url
 
       download_url
+    end
+
+    def report_info(report_id)
+      polled = poll_report(report_id)
+      polled_body = polled.body
+
+      { url: get_download_url(polled_body), status: get_status(polled_body) }
     end
 
     def client

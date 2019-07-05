@@ -33,7 +33,7 @@ detectors:
   FeatureEnvy:
     enabled: true
   InstanceVariableAssumption:
-    enabled: true
+    enabled: false
   NestedIterators:
     max_allowed_nesting: 2
   TooManyInstanceVariables:
