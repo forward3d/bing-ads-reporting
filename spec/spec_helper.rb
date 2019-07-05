@@ -1,4 +1,4 @@
-require 'bing-ads-reporting'
+require 'bing_ads_reporting'
 require_relative './support/bing_soap_helper'
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
