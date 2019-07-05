@@ -4,7 +4,7 @@ require 'nori'
 require 'datebox'
 require 'curl'
 
-describe BingAdsReporting::AdInsightService do
+describe BingAdsReporting::BulkService do
   let(:dev_token)   { '0000000123DF' }
   let(:app_token)   { '0000000SD313' }
   let(:auth_token)  { 'MS12399031jj' }
@@ -90,52 +90,6 @@ describe BingAdsReporting::AdInsightService do
       end
 
       it { expect { report_test }.to raise_exception(Savon::SOAPFault) }
-    end
-
-    context 'when the token is expired' do
-      let(:error_hash) do
-        {
-          fault: {
-            faultcode: 's:Server',
-            faultstring: 'Invalid client data. Check the SOAP fault details for more information',
-            detail: {
-              api_fault_detail: {
-                :tracking_id => 'c782ddaa-b735-404e-8111-b61f1776ae71',
-                :batch_errors => nil,
-                :operation_errors => {
-                  operation_error: {
-                    code: '2010',
-                    details: nil,
-                    error_code: 'AuthenticationTokenExpired',
-                    message: 'Authentication token is expired.'
-                  }
-                },
-                :@xmlns => 'https://bingads.microsoft.com/Reporting/v12',
-                :"@xmlns:i" => 'http://www.w3.org/2001/XMLSchema-instance'
-              }
-            }
-          }
-        }
-      end
-      let(:response_double) { instance_double('Savon::Response', body: '') }
-      let(:savon_exception) do
-        Savon::SOAPFault.new(response_double, nori)
-      end
-
-      before do
-        allow_any_instance_of(Savon::SOAPFault).to receive(:to_s).and_return('Error Message')
-        allow_any_instance_of(Savon::SOAPFault).to receive(:to_hash) { error_hash }
-        allow_any_instance_of(Savon::Client).to receive(:call).and_raise(savon_exception)
-      end
-
-      it do
-        expect { report_test }.to(
-          raise_exception(
-            BingAdsReporting::AuthenticationTokenExpired,
-            'Authentication token is expired.'
-          )
-        )
-      end
     end
   end
 

@@ -20,6 +20,9 @@ detectors:
     - "/[A-Z]/"
     accept:
     - "/^_$/"
+    - "/^e$/"
+    - "/^k$/"
+    - "/^v$/"
   LongYieldList:
     max_params: 3
   LongParameterList:

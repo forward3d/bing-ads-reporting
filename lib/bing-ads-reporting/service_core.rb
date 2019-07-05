@@ -1,27 +1,23 @@
 require 'savon'
 require_relative 'abstract_methods'
-require_relative 'bing_settings'
+require_relative 'downloader'
 
 module BingAdsReporting
   class AuthenticationTokenExpired < StandardError; end
   class AuthenticationViaOAuthIsRequired < StandardError; end
 
   class ServiceCore
-    include BingAdsReporting::AbstractMethods
+    include AbstractMethods
+    include BingHelper
+
     def initialize(settings, logger = nil)
       @settings = settings
-      @logger = logger || Logger.new($stdout)
+      @logger = logger
     end
 
     def generate_report(report_settings, report_params)
       options = default_options(report_settings).merge(report_params)
-      begin
-        response = client.call(report_operation(options), message: generate_report_message(options))
-      rescue Savon::SOAPFault => e
-        handle_error(e)
-        @logger.error e.message
-        raise e
-      end
+      response = call_operation(options)
 
       get_report_id(response.body, options)
     end
@@ -29,7 +25,9 @@ module BingAdsReporting
     # returns nil if there is no data
     def report_body(report_id)
       download_url = report_url(report_id)
-      download(download_url)
+      return unless download_url
+
+      Downloader.fetch_report(download_url)
     end
 
     def report_ready?(report_id)
@@ -42,6 +40,14 @@ module BingAdsReporting
 
     private
 
+    def call_operation(options)
+      client.call(report_operation(options), message: generate_report_message(options))
+    rescue Savon::SOAPFault => e
+      handle_error(e)
+      logger.error e.message
+      raise e
+    end
+
     def default_options(report_settings)
       { report_name: 'MyReport' }.merge(report_settings.map { |k, v| [k.to_sym, v] }.to_h)
     end
@@ -53,13 +59,9 @@ module BingAdsReporting
     end
 
     def handle_error(exception_obj)
-      err = get_error_code(exception_obj)
-      msg = exception_obj.to_hash[:fault][:detail][:ad_api_fault_detail][:errors][:ad_api_error][:message] if err
-
-      if err.nil?
-        err = get_operation_error_code(exception_obj)
-        msg = exception_obj.to_hash[:fault][:detail][:api_fault_detail][:operation_errors][:operation_error][:message] if err
-      end
+      fault_detail = exception_obj.to_hash[:fault][:detail]
+      err = SoapErrorHelper.fault_error_code(fault_detail)
+      msg = SoapErrorHelper.fault_error_msg(fault_detail)
 
       raise_error_if_token_expired(err, msg)
     end
@@ -68,40 +70,24 @@ module BingAdsReporting
       err == 'AuthenticationTokenExpired'
     end
 
-    def get_error_code(exception_obj)
-      exception_obj.to_hash[:fault][:detail][:ad_api_fault_detail][:errors][:ad_api_error][:error_code]
-    rescue StandardError
-      nil
-    end
-
-    def get_operation_error_code(exception_obj)
-      exception_obj.to_hash[:fault][:detail][:api_fault_detail][:operation_errors][:operation_error][:error_code]
-    rescue StandardError
-      nil
-    end
-
     def raise_error_if_token_expired(err, msg)
-      @logger.error(err) if token_expired?(err)
-      raise AuthenticationTokenExpired, msg if token_expired?(err)
+      if token_expired?(err)
+        logger.error(err)
+        raise AuthenticationTokenExpired, msg
+      end
+
+      nil
     end
 
     def report_url(report_id)
       polled = poll_report(report_id)
-      status = get_status(polled.body)
-      download_url = get_download_url(polled.body)
-      return nil if download_url.nil? && status == success_status
+      polled_body = polled.body
+      status = get_status(polled_body)
+      download_url = get_download_url(polled_body)
+      return if !download_url && status == success_status
       raise "Report URL is not available for report id #{report_id}" unless download_url
 
       download_url
-    end
-
-    def download(url)
-      return unless url
-
-      @logger.debug "Downloading Bing report from: #{url}"
-      curl = Curl::Easy.new(url)
-      curl.perform
-      curl.body_str
     end
 
     def client
@@ -125,10 +111,6 @@ module BingAdsReporting
                       'xmlns:i' => 'http://www.w3.org/2001/XMLSchema-instance' },
         soap_header: header
       }
-    end
-
-    def ns(str)
-      "tns:#{str}"
     end
   end
 end
