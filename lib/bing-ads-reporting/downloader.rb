@@ -13,7 +13,7 @@ module BingAdsReporting
     end
 
     def fetch_report
-      # logger.debug "Downloading Bing report from: #{report_url}"
+      logger.debug "Downloading Bing report from: #{report_url}"
       curl.perform
       curl.body_str
     end
