@@ -1,5 +1,7 @@
 module BingAdsReporting
   class BingSettings
+    include BingHelper
+
     attr_reader :settings
 
     def initialize(settings)
@@ -18,12 +20,6 @@ module BingAdsReporting
         ns('DeveloperToken') => settings[:developerToken],
         ns('AuthenticationToken') => settings[:authenticationToken]
       }
-    end
-
-    private
-
-    def ns(str)
-      "tns:#{str}"
     end
   end
 end
