@@ -1,0 +1,83 @@
+---
+directories: {}
+detectors:
+  IrresponsibleModule:
+    enabled: false
+  UtilityFunction:
+    public_methods_only: true
+  Attribute:
+    enabled: true
+  DuplicateMethodCall:
+    max_calls: 1
+  NilCheck:
+    enabled: true
+  TooManyStatements:
+    max_statements: 5
+  UncommunicativeVariableName:
+    reject:
+    - "/^.$/"
+    - "/[0-9]$/"
+    - "/[A-Z]/"
+    accept:
+    - "/^_$/"
+    - "/^e$/"
+    - "/^k$/"
+    - "/^v$/"
+  LongYieldList:
+    max_params: 3
+  LongParameterList:
+    max_params: 4
+    overrides:
+      initialize:
+        max_params: 5
+  FeatureEnvy:
+    enabled: true
+  InstanceVariableAssumption:
+    enabled: false
+  NestedIterators:
+    max_allowed_nesting: 2
+  TooManyInstanceVariables:
+    max_instance_variables: 4
+  MissingSafeMethod:
+    enabled: true
+    exclude:
+    - validate!
+  ControlParameter:
+    enabled: true
+  UncommunicativeParameterName:
+    reject:
+    - "/^.$/"
+    - "/[0-9]$/"
+    - "/[A-Z]/"
+    - "/^_/"
+    accept:
+    - s3
+  TooManyConstants:
+    max_constants: 5
+  ManualDispatch:
+    enabled: true
+  BooleanParameter:
+    enabled: true
+  UncommunicativeModuleName:
+    reject:
+    - "/^.$/"
+    - "/[0-9]$/"
+    accept:
+    - S3
+  TooManyMethods:
+    max_methods: 15
+  UncommunicativeMethodName:
+    reject:
+    - "/^[a-z]$/"
+    - "/[0-9]$/"
+    - "/[A-Z]/"
+  DataClump:
+    max_copies: 2
+    min_clump_size: 2
+  RepeatedConditional:
+    enabled: true
+  ClassVariable:
+    enabled: true
+exclude_paths:
+  - vendor
+  - sql_control_client

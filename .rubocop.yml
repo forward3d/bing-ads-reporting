@@ -1,0 +1,304 @@
+require:
+  - rubocop-performance
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 2.5
+  # RuboCop has a bunch of cops enabled by default. This setting tells RuboCop
+  # to ignore them, so only the ones explicitly set in this file are enabled.
+  DisabledByDefault: false
+  Exclude:
+    - '**/vendor/**/.*'
+    - 'vendor/**/*'
+    - 'spec/support/**/*'
+    - 'sql_control_client/**/*'
+
+Rails:
+  Enabled: false
+
+SignalException:
+  EnforcedStyle: only_raise
+
+DotPosition:
+  Enabled: true
+  EnforcedStyle: trailing
+
+# Octals to be prefixed with 0, not 0o
+Style/NumericLiteralPrefix:
+  EnforcedOctalStyle: zero_only
+
+# Do not require frozen_string_literal_comments
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: never
+
+# Do not require documenting classes
+Style/Documentation:
+  Enabled: false
+
+# Prefer &&/|| over and/or.
+Style/AndOr:
+  Enabled: true
+  EnforcedStyle: conditionals
+
+# Do not use braces for hash literals when they are the last argument of a
+# method call.
+Style/BracesAroundHashParameters:
+  Enabled: true
+  EnforcedStyle: context_dependent
+
+# Use Ruby >= 1.9 syntax for hashes. Prefer { a: :b } over { :a => :b }.
+Style/HashSyntax:
+  Enabled: true
+
+Style/DefWithParentheses:
+  Enabled: true
+
+# Defining a method with parameters needs parentheses.
+Style/MethodDefParentheses:
+  Enabled: true
+
+# Check quotes usage according to lint rule below.
+Style/StringLiterals:
+  Enabled: true
+
+# Use quotes for string literals when they are enough.
+Style/UnneededPercentQ:
+  Enabled: true
+
+Style/RedundantReturn:
+  Enabled: true
+  AllowMultipleReturnValues: true
+
+Style/Semicolon:
+  Enabled: true
+  AllowAsExpressionSeparator: true
+
+# Prefer Foo.method over Foo::method
+Style/ColonMethodCall:
+  Enabled: true
+
+Style/TrivialAccessors:
+  Enabled: true
+
+# https://rubocop.readthedocs.io/en/latest/cops_style/#styleemptymethod
+Style/EmptyMethod:
+  Enabled: true
+  EnforcedStyle: expanded
+
+# Prefer raise Error, "msg" over raise Error.new("msg") when only one arg
+Style/RaiseArgs:
+  Enabled: true
+
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
+# Use my_method(my_arg) not my_method( my_arg ) or my_method my_arg.
+Lint/RequireParentheses:
+  Enabled: true
+
+Lint/StringConversionInInterpolation:
+  Enabled: true
+
+Naming/FileName:
+  Exclude:
+    - Gemfile
+
+Naming/HeredocDelimiterCase:
+  EnforcedStyle: lowercase
+
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
+Naming/UncommunicativeMethodParamName:
+  AllowedNames:
+    - s3
+
+Layout/AlignHash:
+  Enabled: false
+
+Layout/IndentFirstArrayElement:
+  EnforcedStyle: consistent
+
+# Align `when` with `case`.
+Layout/CaseIndentation:
+  Enabled: true
+
+# Align comments with method definitions.
+Layout/CommentIndentation:
+  Enabled: true
+
+Layout/ElseAlignment:
+  Enabled: true
+
+# Align `end` with the matching keyword or starting expression except for
+# assignments, where it should be aligned with the LHS.
+Layout/EndAlignment:
+  Enabled: true
+  EnforcedStyleAlignWith: variable
+  AutoCorrect: true
+
+Layout/EmptyLineAfterMagicComment:
+  Enabled: true
+
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: true
+
+# In a regular class definition, no empty lines around the body.
+Layout/EmptyLinesAroundClassBody:
+  Enabled: true
+
+# In a regular method definition, no empty lines around the body.
+Layout/EmptyLinesAroundMethodBody:
+  Enabled: true
+
+# In a regular module definition, no empty lines around the body.
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: true
+
+Layout/IndentFirstArgument:
+  Enabled: true
+
+# Method definitions after `private` or `protected` isolated calls need one
+# extra level of indentation.
+Layout/IndentationConsistency:
+  Enabled: true
+  EnforcedStyle: normal
+
+# Two spaces, no tabs (for indentation).
+Layout/IndentationWidth:
+  Enabled: true
+
+Layout/LeadingCommentSpace:
+  Enabled: true
+
+Layout/SpaceAfterColon:
+  Enabled: true
+
+Layout/SpaceAfterComma:
+  Enabled: true
+
+Layout/SpaceAroundEqualsInParameterDefault:
+  Enabled: true
+
+Layout/SpaceAroundKeyword:
+  Enabled: true
+
+Layout/SpaceAroundOperators:
+  Enabled: true
+
+Layout/SpaceBeforeComma:
+    Enabled: true
+
+Layout/SpaceBeforeFirstArg:
+    Enabled: true
+
+# Use `foo {}` not `foo{}`.
+Layout/SpaceBeforeBlockBraces:
+  Enabled: true
+
+# Use `foo { bar }` not `foo {bar}`.
+Layout/SpaceInsideBlockBraces:
+  Enabled: true
+
+# Use `{ a: 1 }` not `{a:1}`.
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: true
+
+Layout/SpaceInsideParens:
+  Enabled: true
+
+# Detect hard tabs, no hard tabs.
+Layout/Tab:
+  Enabled: true
+
+# Blank lines should not have any spaces.
+Layout/TrailingBlankLines:
+  Enabled: true
+
+# No trailing whitespace.
+Layout/TrailingWhitespace:
+  Enabled: true
+
+# https://rubocop.readthedocs.io/en/latest/cops_layout/#layoutmultilineoperationindentation
+Layout/MultilineOperationIndentation:
+  Enabled: true
+  EnforcedStyle: indented
+
+Performance/FlatMap:
+  Enabled: true
+
+Performance/RedundantMerge:
+  Enabled: true
+
+Performance/StartWith:
+  Enabled: true
+
+Performance/EndWith:
+  Enabled: true
+
+Performance/RegexpMatch:
+  Enabled: true
+
+# https://rubocop.readthedocs.io/en/latest/cops_metrics/#metricsabcsize
+Metrics/AbcSize:
+  Enabled: true
+  Max: 20
+
+# Max 5 params for a method
+Metrics/ParameterLists:
+  Enabled: true
+
+# https://rubocop.readthedocs.io/en/latest/cops_metrics/#metricscyclomaticcomplexity
+Metrics/CyclomaticComplexity:
+  Enabled: true
+
+Metrics/LineLength:
+  Max: 130
+
+Metrics/BlockLength:
+  ExcludedMethods: [
+  'describe', 'shared_examples_for', 'shared_examples', 'task', 'namespace', 'it', 'scenario', 'context', 'configure'
+  ]
+
+RSpec/SubjectStub:
+  Enabled: false
+
+RSpec/AnyInstance:
+  Enabled: false
+
+RSpec/FilePath:
+  Enabled: false
+
+RSpec/LeadingSubject:
+  Enabled: false
+
+# Prefer expect().to receive() over expect().to have_received()
+RSpec/MessageSpies:
+  Enabled: true
+  EnforcedStyle: receive
+
+RSpec/ExampleLength:
+  Enabled: true
+  Max: 20
+
+# Prefer subject(:name) {} over subject {}
+RSpec/NamedSubject:
+  Enabled: true
+
+# Max 8 expect() per example
+RSpec/MultipleExpectations:
+  Enabled: true
+  Max: 8
+
+# Allow up to 5 nestings
+RSpec/NestedGroups:
+  Enabled: true
+  Max: 6
+
+# Prefer instance_double or class_double over just double
+RSpec/VerifiedDoubles:
+  Enabled: true
+
+# Do not use expect() in before or after hooks
+RSpec/ExpectInHook:
+  Enabled: true

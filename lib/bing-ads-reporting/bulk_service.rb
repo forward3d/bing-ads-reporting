@@ -32,44 +32,50 @@ module BingAdsReporting
       period = options[:period]
       data_scope = options[:data_scope]
 
-      message = {
-        ns('AccountIds') => {
-          'arr:long' => @settings[:accountId]
-        },
+      message = report_message(options, data_scope)
+      message = message_data_scope(message, period) if data_scope == 'EntityPerformanceData'
+      # end
+      message
+    end
+
+    def report_message(options, data_scope)
+      {
+        ns('AccountIds') => { 'arr:long' => @settings[:accountId] },
         ns('CompressionType') => 'Zip',
         ns('DataScope') => data_scope,
-        ns('DownloadEntities') => {
-          ns('DownloadEntity') => options[:download_entities]
-        },
+        ns('DownloadEntities') => { ns('DownloadEntity') => options[:download_entities] },
         ns('DownloadFileType') => options[:report_format],
         ns('FormatVersion') => '6.0',
-        ns('LastSyncTimeInUtc') => true,
+        ns('LastSyncTimeInUtc') => true
       }
+    end
 
-      if data_scope == 'EntityPerformanceData'
-        message[ns('PerformanceStatsDateRange')] = {
-          # apparently order is important, and end date has to be before start date, wtf
-          ns('CustomDateRangeEnd') => {
-            ns('Day') => period.to.day,
-            ns('Month') => period.to.month,
-            ns('Year') => period.to.year
-          },
-          ns('CustomDateRangeStart') => {
-            ns('Day') => period.from.day,
-            ns('Month') => period.from.month,
-            ns('Year') => period.from.year
-          }
-        }
-      end
-      message
+    def message_data_scope(message)
+      message[ns('PerformanceStatsDateRange')] = {
+        # apparently order is important, and end date has to be before start date, wtf
+        ns('CustomDateRangeEnd') => scope_data_range(period.to),
+        ns('CustomDateRangeStart') => scope_data_range(period.from)
+      }
+    end
+
+    def scope_data_range(period_range)
+      day_key = ns('Day')
+      month_key = ns('Month')
+      year_key = ns('Year')
+
+      {
+        day_key => period_range.day,
+        month_key => period_range.month,
+        year_key => period_range.year
+      }
     end
 
     def poll_operation
       :get_bulk_download_status
     end
 
-    def generate_poll_message(id)
-      { ns('RequestId') => id }
+    def generate_poll_message(report_id)
+      { ns('RequestId') => report_id }
     end
 
     def get_report_id(body, options)
@@ -77,12 +83,15 @@ module BingAdsReporting
     end
 
     def get_status(body)
-      body[:get_bulk_download_status_response][:request_status] rescue nil
+      body[:get_bulk_download_status_response][:request_status]
+    rescue StandardError
+      nil
     end
 
     def get_download_url(body)
-      body[:get_bulk_download_status_response][:result_file_url] rescue nil
+      body[:get_bulk_download_status_response][:result_file_url]
+    rescue StandardError
+      nil
     end
-
   end
 end
