@@ -25,9 +25,9 @@ describe BingAdsReporting::BulkService do
       accountId: account_id,
       customerId: customer_id,
       report_type: report_type,
-      report_format: "Tsv",
-      data_scope: "EntityData",
-      download_entities: ["Keywords"]
+      report_format: 'Tsv',
+      data_scope: 'EntityData',
+      download_entities: ['Keywords']
     }
   end
 
