@@ -1,7 +1,7 @@
 require_relative 'service_core'
 
 module BingAdsReporting
-  class AdInsightReal < ServiceCore
+  class InsightService < ServiceCore
     WDSL = 'https://adinsight.api.bingads.microsoft.com/Api/Advertiser/AdInsight/v13/AdInsightService.svc?singleWsdl'.freeze
     FAILED_STATUS = 'Error'.freeze
     SUCCESS_STATUS = 'Success'.freeze
@@ -47,16 +47,15 @@ module BingAdsReporting
       report_request(period, options, report_type)
     end
 
-    def report_request(period, _options, _report_type)
+    def report_request(period, options, _report_type)
       {
-        'EntityType' => 'Account',
+        'EntityType' => options[:entity_type],
         'SearchParameters' => {
           'SearchParameter' =>  date_range(period)
         },
         '@xsi:type' => 'tns:DateRangeSearchParameter'
       }
     end
-
 
     def date_range(period)
       {
