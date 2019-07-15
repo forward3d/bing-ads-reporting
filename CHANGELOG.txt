@@ -1,3 +1,11 @@
+* 4.1.0
+  Add ReportingService
+  Add InsightService(correct AdInsightService API)
+  Deprecate AdInsightService class
+
+* 4.0.0
+  Code refactoring
+
 * 3.0.0
   Using API V12
   API12 is no longer support authentication via Username/password.
