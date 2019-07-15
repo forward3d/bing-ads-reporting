@@ -8,6 +8,11 @@ module BingAdsReporting
 
     private
 
+    def initialize(settings, logger = nil)
+      warn 'Deprecated class use ReportingService instead'
+      super
+    end
+
     def wdsl
       WDSL
     end
