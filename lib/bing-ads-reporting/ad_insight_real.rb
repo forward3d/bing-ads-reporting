@@ -8,7 +8,9 @@ module BingAdsReporting
 
     def generate_report(report_settings, report_params)
       options = default_options(report_settings).merge(report_params)
-      call_operation(options)
+      response = call_operation(options)
+
+      response_result(response, options)
     end
 
     private
@@ -23,6 +25,15 @@ module BingAdsReporting
 
     def success_status
       SUCCESS_STATUS
+    end
+
+    def response_result(response, options)
+      tag = response_tag(options)
+      response.body[tag]
+    end
+
+    def response_tag(options)
+      "#{report_operation(options)}_response".to_sym
     end
 
     def report_operation(options)
