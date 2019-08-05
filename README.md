@@ -8,7 +8,7 @@
 
 ### Initializing service.
 
-- All Reporting Service - [Bing Ads Reference for Reporting Service](https://docs.microsoft.com/en-us/advertising/reporting-service/reporting-service-reference?view=bingads-12)
+#### All Reporting Service - [Bing Ads Reference for Reporting Service](https://docs.microsoft.com/en-us/advertising/reporting-service/reporting-service-reference?view=bingads-12)
 
 ```ruby
 service = BingAdsReporting::ReportingService.new({
@@ -19,7 +19,7 @@ service = BingAdsReporting::ReportingService.new({
   customerId: ''})
 ```
 
-- Bulk Service - [Bing Ads API reference for Bulk Service](https://docs.microsoft.com/en-us/advertising/reporting-service/reporting-service-operations?view=bingads-12)
+#### Bulk Service - [Bing Ads API reference for Bulk Service](https://docs.microsoft.com/en-us/advertising/reporting-service/reporting-service-operations?view=bingads-12)
 
 ```ruby
 service = BingAdsReporting::BulkService.new({
@@ -31,13 +31,17 @@ service = BingAdsReporting::BulkService.new({
 })
 ```
 
-- Insight Service(actual AdInsight Serive) - [Bing Ads API reference for Bulk Service](https://docs.microsoft.com/en-us/advertising/ad-insight-service/ad-insight-service-reference?view=bingads-13)
+#### Insight Service(actual AdInsight Serive) - [Bing Ads API reference for Bulk Service](https://docs.microsoft.com/en-us/advertising/ad-insight-service/ad-insight-service-reference?view=bingads-13)
 
 ```ruby
 service = BingAdsReporting::InsightService.new(auth_settings, logger, request_class)
 ```
 
-Request Class example
+##### Request Class example
+
+For which report in AdInsightService API, which one has different SOAP request.
+
+Bellow an example of the request for [Auction Insight report](https://docs.microsoft.com/en-us/advertising/ad-insight-service/getauctioninsightdata?view=bingads-13#request-soap).
 
 ```ruby
 class AuctionInsightRequest
@@ -76,7 +80,7 @@ class AuctionInsightRequest
 end
 ```
 
-- AdInsight Service(DEPRECATED)
+#### AdInsight Service(DEPRECATED)
 
 Use `ReportingService` instead.
 
