@@ -5,6 +5,13 @@ module BingAdsReporting
     WDSL = 'https://adinsight.api.bingads.microsoft.com/Api/Advertiser/AdInsight/v13/AdInsightService.svc?singleWsdl'.freeze
     FAILED_STATUS = 'Error'.freeze
     SUCCESS_STATUS = 'Success'.freeze
+    attr_reader :request_class
+
+    def initialize(settings, logger = nil, request_class)
+      @request_class = request_class
+
+      super(settings, logger)
+    end
 
     def generate_report(report_settings, report_params)
       options = default_options(report_settings).merge(report_params)
@@ -42,35 +49,8 @@ module BingAdsReporting
 
     def generate_report_message(options)
       period = options[:period]
-      report_type = options[:report_type]
 
-      report_request(period, options, report_type)
-    end
-
-    def report_request(period, options, _report_type)
-      {
-        'EntityType' => options[:entity_type],
-        'SearchParameters' => {
-          'SearchParameter' =>  date_range(period)
-        },
-        '@xsi:type' => 'tns:DateRangeSearchParameter'
-      }
-    end
-
-    def date_range(period)
-      {
-        'EndDate' => scope_data_range(period.to),
-        'StartDate' => scope_data_range(period.from),
-        '@i:type' => 'tns:DateRangeSearchParameter'
-      }
-    end
-
-    def scope_data_range(period_range)
-      {
-        ns('Day') => "#{period_range.day}",
-        ns('Month') => "#{period_range.month}",
-        ns('Year') => "#{period_range.year}"
-      }
+      request_class.message(period, options)
     end
   end
 end
