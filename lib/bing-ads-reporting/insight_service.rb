@@ -49,9 +49,7 @@ module BingAdsReporting
 
     def generate_report_message(options)
       period = options[:period]
-      # report_type = options[:report_type]
 
-      # report_request(period, options)
       request_class.message(period, options)
     end
   end
