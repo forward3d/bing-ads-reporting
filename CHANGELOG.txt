@@ -1,3 +1,6 @@
+* 4.2.0
+  Add InsightService request class for custom reports.
+
 * 4.1.0
   Add ReportingService
   Add InsightService(correct AdInsightService API)

@@ -34,13 +34,46 @@ service = BingAdsReporting::BulkService.new({
 - Insight Service(actual AdInsight Serive) - [Bing Ads API reference for Bulk Service](https://docs.microsoft.com/en-us/advertising/ad-insight-service/ad-insight-service-reference?view=bingads-13)
 
 ```ruby
-service = BingAdsReporting::InsightService.new({
-  developerToken: '',
-  applicationToken: '',
-  authenticationToken: '',
-  :accountId: '',
-  customerId: ''
-})
+service = BingAdsReporting::InsightService.new(auth_settings, logger, request_class)
+```
+
+Request Class example
+
+```ruby
+class AuctionInsightRequest
+  attr_reader :period, :options
+
+  def initialize(period, options)
+    @period = period
+    @options = options
+  end
+
+  def self.message(period, options)
+    new(period, options).message
+  end
+
+  def message
+    {
+      'EntityType' => options[:entity_type],
+      'SearchParameters' => {
+        'SearchParameter' => {
+          'EndDate' => {
+            'Day' => '10',
+            'Month' => '02',
+            'Year' => '2018'
+          },
+          'StartDate' => {
+            'Day' => '10',
+            'Month' => '01',
+            'Year' => '2018'
+          },
+          '@i:type' => 'tns:DateRangeSearchParameter'
+        }
+      },
+      '@xsi:type' => 'tns:DateRangeSearchParameter'
+    }
+  end
+end
 ```
 
 - AdInsight Service(DEPRECATED)
@@ -100,5 +133,11 @@ service.report_body(id) if service.report_ready?(id)
 ### Get Auction Insight Results
 
 ```ruby
-result = serive.generate_report({report_type: AuctionInsightData, entity_type: 'Account'})
+result = service.generate_report({report_type: AuctionInsightData, entity_type: 'Account'})
+```
+
+### Get Auction Insight Results for Keywords
+
+```ruby
+result = service.generate_report({report_type: AuctionInsightData, entity_type: 'Account', entity_ids: [1, 2, 3]})
 ```
