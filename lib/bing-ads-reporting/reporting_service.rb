@@ -1,17 +1,12 @@
 require_relative 'service_core'
 
 module BingAdsReporting
-  class AdInsightService < ServiceCore
+  class ReportingService < ServiceCore
     WDSL = 'https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/V12/ReportingService.svc?singleWsdl'.freeze
     FAILED_STATUS = 'Error'.freeze
     SUCCESS_STATUS = 'Success'.freeze
 
     private
-
-    def initialize(settings, logger = nil)
-      warn 'Deprecated class use ReportingService instead'
-      super
-    end
 
     def wdsl
       WDSL
@@ -27,6 +22,10 @@ module BingAdsReporting
 
     def report_operation(_)
       :submit_generate_report
+    end
+
+    def poll_operation
+      :poll_generate_report
     end
 
     def generate_report_message(options)
@@ -87,10 +86,6 @@ module BingAdsReporting
         month_key => period_range.month,
         year_key => period_range.year
       }
-    end
-
-    def poll_operation
-      :poll_generate_report
     end
 
     def generate_poll_message(report_id)
