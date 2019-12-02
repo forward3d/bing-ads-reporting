@@ -10,7 +10,6 @@ Gem::Specification.new do |gem|
   gem.homepage      = 'https://github.com/forward3d/bing-ads-reporting'
 
   gem.files         = ['lib/bing-ads-reporting.rb',
-                       'lib/bing-ads-reporting/service.rb',
                        'lib/bing-ads-reporting/version.rb']
 
   gem.executables   = [] # gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
