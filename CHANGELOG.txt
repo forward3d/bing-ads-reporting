@@ -1,3 +1,7 @@
+* 5.0.0
+  Fully using API V13
+  BREAKING CHANGE: AdInsightService class removed, use ReportingService instead
+
 * 4.2.0
   Add InsightService request class for custom reports.
 

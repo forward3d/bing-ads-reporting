@@ -2,7 +2,7 @@ require_relative 'service_core'
 
 module BingAdsReporting
   class BulkService < ServiceCore
-    WDSL = 'https://bulk.api.bingads.microsoft.com/Api/Advertiser/CampaignManagement/V12/BulkService.svc?wsdl'.freeze
+    WDSL = 'https://bulk.api.bingads.microsoft.com/Api/Advertiser/CampaignManagement/V13/BulkService.svc?wsdl'.freeze
     FAILED_STATUS = 'Failed'.freeze
     SUCCESS_STATUS = 'Completed'.freeze
 
@@ -33,8 +33,6 @@ module BingAdsReporting
       data_scope = options[:data_scope]
 
       message = report_message(options, data_scope)
-      message = message_data_scope(message, period) if data_scope == 'EntityPerformanceData'
-      # end
       message
     end
 
@@ -47,14 +45,6 @@ module BingAdsReporting
         ns('DownloadFileType') => options[:report_format],
         ns('FormatVersion') => '6.0',
         ns('LastSyncTimeInUtc') => true
-      }
-    end
-
-    def message_data_scope(message)
-      message[ns('PerformanceStatsDateRange')] = {
-        # apparently order is important, and end date has to be before start date, wtf
-        ns('CustomDateRangeEnd') => scope_data_range(period.to),
-        ns('CustomDateRangeStart') => scope_data_range(period.from)
       }
     end
 
