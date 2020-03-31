@@ -21,7 +21,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'oauth2',  '~> 1.4.1'
   gem.add_dependency 'savon',   '~> 2.12.0'
 
-  gem.add_development_dependency 'reek', '~> 5.4.0'
+  gem.add_development_dependency 'reek', '~> 6.0.0'
   gem.add_development_dependency 'rspec', '~> 3.4.0'
   gem.add_development_dependency 'rubocop', '~> 0.70.0'
   gem.add_development_dependency 'rubocop-performance', '~> 1.3.0'
