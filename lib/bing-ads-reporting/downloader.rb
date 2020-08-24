@@ -14,12 +14,8 @@ module BingAdsReporting
 
     def fetch_report
       logger.debug "Downloading Bing report from: #{report_url}"
-      begin
-        response = HTTParty.get(report_url)
-        response.body
-      rescue StandardError => error
-        nil
-      end
+      response = HTTParty.get(report_url)
+      response.body
     end
   end
 end
