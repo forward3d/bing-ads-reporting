@@ -31,21 +31,9 @@ service = BingAdsReporting::BulkService.new({
 })
 ```
 
-#### Insight Service(actual AdInsight Serive) - [Bing Ads API reference for Bulk Service](https://docs.microsoft.com/en-us/advertising/ad-insight-service/ad-insight-service-reference?view=bingads-13)
-
-```ruby
-service = BingAdsReporting::BulkService.new({
-  developerToken: '',
-  applicationToken: '',
-  authenticationToken: '',
-  :accountId: '',
-  customerId: ''
-})
-```
-
 ## Create report and get it's ID
 
-### Ad Reporting Service
+### Reporting Service
 
 ```ruby
 period = Datebox::Period.new('2013-07-01', '2013-07-03')
