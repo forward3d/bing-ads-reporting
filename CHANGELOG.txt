@@ -1,3 +1,7 @@
+* 6.0.0
+  Remove curb in favor of httparty
+  Remove InsightService
+
 * 5.0.0
   Fully using API V13
   BREAKING CHANGE: AdInsightService class removed, use ReportingService instead

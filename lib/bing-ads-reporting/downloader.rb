@@ -14,14 +14,12 @@ module BingAdsReporting
 
     def fetch_report
       logger.debug "Downloading Bing report from: #{report_url}"
-      curl.perform
-      curl.body_str
-    end
-
-    private
-
-    def curl
-      @curl ||= Curl::Easy.new(report_url)
+      begin
+        response = HTTParty.get(report_url)
+        response.body
+      rescue StandardError => error
+        nil
+      end
     end
   end
 end
