@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'savon'
 require 'nori'
 require 'datebox'
-require 'curl'
+require 'httparty'
 
 describe BingAdsReporting::BulkService do
   let(:dev_token)   { '0000000123DF' }
@@ -75,8 +75,7 @@ describe BingAdsReporting::BulkService do
     subject(:report_body) { service.report_body(report_id) }
 
     before do
-      allow_any_instance_of(Curl::Easy).to receive(:perform).and_return(true)
-      allow_any_instance_of(Curl::Easy).to receive(:body_str).and_return('REPORT_DATA')
+      allow_any_instance_of(HTTParty::Response).to receive(:body).and_return('REPORT_DATA')
     end
 
     context 'when report is ready' do

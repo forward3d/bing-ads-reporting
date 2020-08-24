@@ -14,14 +14,8 @@ module BingAdsReporting
 
     def fetch_report
       logger.debug "Downloading Bing report from: #{report_url}"
-      curl.perform
-      curl.body_str
-    end
-
-    private
-
-    def curl
-      @curl ||= Curl::Easy.new(report_url)
+      response = HTTParty.get(report_url)
+      response.body
     end
   end
 end
