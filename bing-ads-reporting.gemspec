@@ -9,7 +9,7 @@ Gem::Specification.new do |gem|
   gem.summary       = 'Allows easily pull reports from Bing Ads'
   gem.homepage      = 'https://github.com/forward3d/bing-ads-reporting'
 
-  gem.files         = ['lib/bing-ads-reporting.rb',
+  gem.files         = ['lib/bing_ads_reporting.rb',
                        'lib/bing-ads-reporting/version.rb']
 
   gem.executables   = [] # gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
