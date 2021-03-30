@@ -1,3 +1,6 @@
+* 6.0.2
+  Fix broken gemspec
+
 * 6.0.1
   Add GH action to automate gem deploy to gh packages
 
