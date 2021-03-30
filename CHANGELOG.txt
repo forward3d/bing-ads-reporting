@@ -1,3 +1,6 @@
+* 6.0.1
+  Add GH action to automate gem deploy to gh packages
+
 * 6.0.0
   Remove curb in favor of httparty
   BREAKING CHANGE: Remove InsightService
