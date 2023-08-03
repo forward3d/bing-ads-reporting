@@ -1,3 +1,6 @@
+* 6.0.5
+  Fix dependency issue with httparty version in respect with f3d-job
+
 * 6.0.4
   Fix issue with failing V13/BulkService API requests
 
