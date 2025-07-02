@@ -1,3 +1,11 @@
+* 7.0.0
+  Fix dependency issue with rack – resolved runtime errors caused by usage of Rack::Utils::HeaderHash in httpi ~> 2.0
+  Changed:
+    Updated the savon dependency to a version compatible with httpi ~> 4.0, which removes the runtime incompatibility with rack >= 3.1.
+  Why this change:
+    httpi ~> 2.0 relied on the internal class Rack::Utils::HeaderHash, which was removed in rack >= 3.1.0, causing runtime errors.
+    httpi ~> 4.0 no longer depends on rack, making it compatible with newer versions (e.g., rack 3.1.x, used in Ruby 3.4 environments).
+
 * 6.0.5
   Fix dependency issue with httparty version in respect with f3d-job
 
